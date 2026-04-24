@@ -1,4 +1,3 @@
-// src/app/api/import/route.ts  (POST → preview)
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { apiError, apiSuccess } from "@/lib/api";
@@ -23,8 +22,10 @@ export async function POST(req: NextRequest) {
 
     const rows = data.map(parseCsvRow);
 
-    // JANコードで一括検索
-    const janCodes = Array.from(new Set(rows.map((r) => r.janCode).filter(Boolean))];
+    const janCodesSet = new Set<string>();
+    rows.forEach((r) => { if (r.janCode) janCodesSet.add(r.janCode); });
+    const janCodes = Array.from(janCodesSet);
+
     const products = await prisma.product.findMany({
       where: { janCode: { in: janCodes } },
     });
