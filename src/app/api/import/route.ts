@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     const rows = data.map(parseCsvRow);
 
     // JANコードで一括検索
-    const janCodes = [...new Set(rows.map((r) => r.janCode).filter(Boolean))];
+    const janCodes = Array.from(new Set(rows.map((r) => r.janCode).filter(Boolean))];
     const products = await prisma.product.findMany({
       where: { janCode: { in: janCodes } },
     });
