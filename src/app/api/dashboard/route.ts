@@ -1,12 +1,14 @@
-// src/app/api/dashboard/route.ts
 import { NextRequest } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { apiError, apiSuccess } from "@/lib/api";
-import { daysLeft, getAlertStatusSimple, formatDate } from "@/lib/date";
-import { LotStatus } from "@prisma/client";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(_req: NextRequest) {
   try {
+    const { prisma } = await import("@/lib/prisma");
+    const { daysLeft, getAlertStatusSimple, formatDate } = await import("@/lib/date");
+    const { LotStatus } = await import("@prisma/client");
+
     const lots = await prisma.inventoryLot.findMany({
       where: { status: LotStatus.ACTIVE },
       include: { product: true },

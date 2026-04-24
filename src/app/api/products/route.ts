@@ -1,4 +1,3 @@
-// src/app/api/products/route.ts
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { apiError, apiSuccess } from "@/lib/api";
