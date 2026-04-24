@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { apiError, apiSuccess } from "@/lib/api";
@@ -67,7 +68,7 @@ export async function GET(req: NextRequest) {
 
     return apiSuccess(summaries);
   } catch (e) {
-    return apiError("商品一覧の取得に失敗しました", 500, e);
+    return apiError("啁E��一覧の取得に失敗しました", 500, e);
   }
 }
 
@@ -77,12 +78,12 @@ export async function POST(req: NextRequest) {
     const { name, spec, janCode, alertDays } = body;
 
     if (!name || !spec || !janCode) {
-      return apiError("name, spec, janCode は必須です");
+      return apiError("name, spec, janCode は忁E��でぁE);
     }
 
     const existing = await prisma.product.findUnique({ where: { janCode } });
     if (existing) {
-      return apiError("このJANコードはすでに登録されています", 409);
+      return apiError("こ�EJANコード�Eすでに登録されてぁE��ぁE, 409);
     }
 
     const product = await prisma.product.create({
@@ -96,6 +97,7 @@ export async function POST(req: NextRequest) {
 
     return apiSuccess(product, 201);
   } catch (e) {
-    return apiError("商品の登録に失敗しました", 500, e);
+    return apiError("啁E��の登録に失敗しました", 500, e);
   }
 }
+

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 // src/app/api/unmatched/route.ts
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
@@ -14,3 +15,4 @@ export async function GET(_req: NextRequest) {
     return apiError("未割当一覧の取得に失敗しました", 500, e);
   }
 }
+
