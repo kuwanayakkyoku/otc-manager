@@ -1,4 +1,6 @@
 export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+export const revalidate = 0;
 // src/app/api/import/execute/route.ts
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
