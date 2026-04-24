@@ -1,4 +1,3 @@
-// src/app/page.tsx
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -6,8 +5,27 @@ import { PageHeader } from "@/components/layout/page-header";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/date";
 import { ALERT_STATUS_CONFIG } from "@/lib/date";
-import type { DashboardStats, AlertStatus } from "@/types";
+import type { AlertStatus } from "@/types";
 import { AlertTriangle, Package, RefreshCw } from "lucide-react";
+
+interface AlertLotItem {
+  lotId: string;
+  productId: string;
+  productName: string;
+  spec: string;
+  expiryDate: string;
+  expiryDateFormatted?: string;
+  quantity: number;
+  daysLeft: number;
+  alertStatus: AlertStatus;
+}
+
+interface DashboardStats {
+  expiredCount: number;
+  days7Count: number;
+  days30Count: number;
+  alertLots: AlertLotItem[];
+}
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -22,13 +40,11 @@ export default function DashboardPage() {
   }
   useEffect(() => { load(); }, []);
 
-  const statCards: { key: AlertStatus; label: string; count: number; filter: string }[] = stats
-    ? [
-        { key: "expired", label: "期限切れ", count: stats.expiredCount, filter: "expired" },
-        { key: "days7", label: "7日以内", count: stats.days7Count, filter: "days7" },
-        { key: "days30", label: "30日以内", count: stats.days30Count, filter: "days30" },
-      ]
-    : [];
+  const statCards = stats ? [
+    { key: "expired" as AlertStatus, label: "期限切れ", count: stats.expiredCount, filter: "expired" },
+    { key: "days7" as AlertStatus, label: "7日以内", count: stats.days7Count, filter: "days7" },
+    { key: "days30" as AlertStatus, label: "30日以内", count: stats.days30Count, filter: "days30" },
+  ] : [];
 
   return (
     <div>
@@ -43,7 +59,6 @@ export default function DashboardPage() {
       />
 
       <div className="px-4 pt-4 space-y-5">
-        {/* Summary cards */}
         <div className="grid grid-cols-3 gap-3">
           {loading
             ? Array(3).fill(0).map((_, i) => (
@@ -64,7 +79,6 @@ export default function DashboardPage() {
               })}
         </div>
 
-        {/* Alert list */}
         <div>
           <div className="flex items-center gap-2 mb-3">
             <AlertTriangle className="w-4 h-4 text-orange-500" />
@@ -86,7 +100,8 @@ export default function DashboardPage() {
           ) : (
             <div className="space-y-2">
               {stats?.alertLots?.map((lot) => {
-                const cfg = ALERT_STATUS_CONFIG[lot.alertStatus as AlertStatus];
+                const cfg = ALERT_STATUS_CONFIG[lot.alertStatus];
+                const dateLabel = lot.expiryDateFormatted ?? formatDate(new Date(lot.expiryDate));
                 return (
                   <button
                     key={lot.lotId}
@@ -102,7 +117,7 @@ export default function DashboardPage() {
                       <p className={`text-sm font-bold ${cfg.color}`}>
                         {lot.daysLeft < 0 ? `${Math.abs(lot.daysLeft)}日超過` : lot.daysLeft === 0 ? "本日" : `${lot.daysLeft}日`}
                       </p>
-                      <p className="text-xs text-gray-400">{lot.expiryDateFormatted ?? formatDate(new Date(lot.expiryDate))}</p>
+                      <p className="text-xs text-gray-400">{dateLabel}</p>
                       <p className="text-xs text-gray-500">{lot.quantity}個</p>
                     </div>
                   </button>
