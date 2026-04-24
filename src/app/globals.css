@@ -1,0 +1,37 @@
+/* src/app/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --safe-area-inset-top: env(safe-area-inset-top);
+    --safe-area-inset-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+@layer utilities {
+  .pt-safe {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+  .pb-safe {
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+}
+
+@keyframes scan {
+  0%, 100% { transform: translateY(-50px); }
+  50% { transform: translateY(50px); }
+}
+.animate-scan {
+  animation: scan 2s ease-in-out infinite;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+input[type="date"] {
+  appearance: none;
+  -webkit-appearance: none;
+}

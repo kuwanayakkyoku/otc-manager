@@ -1,0 +1,109 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Product {
+  id         String   @id @default(uuid())
+  name       String
+  spec       String
+  janCode    String   @unique
+  alertDays  Int[]    @default([30, 7, 0])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  lots InventoryLot[]
+
+  @@index([janCode])
+  @@map("products")
+}
+
+model InventoryLot {
+  id              String      @id @default(uuid())
+  productId       String
+  expiryDate      DateTime    @db.Date
+  quantity        Int
+  initialQuantity Int
+  status          LotStatus   @default(ACTIVE)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  product      Product          @relation(fields: [productId], references: [id])
+  salesRecords SalesRecord[]
+  disposals    DisposalRecord[]
+  alerts       AlertLog[]
+
+  @@index([productId, expiryDate])
+  @@index([status, expiryDate])
+  @@map("inventory_lots")
+}
+
+model SalesRecord {
+  id             String      @id @default(uuid())
+  lotId          String
+  quantity       Int
+  source         SaleSource
+  posTransactionId String?
+  createdAt      DateTime    @default(now())
+
+  lot InventoryLot @relation(fields: [lotId], references: [id])
+
+  @@map("sales_records")
+}
+
+model DisposalRecord {
+  id        String   @id @default(uuid())
+  lotId     String
+  quantity  Int
+  reason    String
+  createdAt DateTime @default(now())
+
+  lot InventoryLot @relation(fields: [lotId], references: [id])
+
+  @@map("disposal_records")
+}
+
+model AlertLog {
+  id        String    @id @default(uuid())
+  lotId     String
+  alertType AlertType
+  sentAt    DateTime  @default(now())
+
+  lot InventoryLot @relation(fields: [lotId], references: [id])
+
+  @@map("alert_log")
+}
+
+model UnmatchedSale {
+  id             String   @id @default(uuid())
+  rawProductName String
+  janCode        String?
+  quantity       Int
+  importedAt     DateTime @default(now())
+  resolved       Boolean  @default(false)
+
+  @@map("unmatched_sales")
+}
+
+enum LotStatus {
+  ACTIVE
+  ARCHIVED
+  DELETED
+}
+
+enum SaleSource {
+  CSV_IMPORT
+  MANUAL
+}
+
+enum AlertType {
+  DAYS_30
+  DAYS_7
+  EXPIRED
+}
