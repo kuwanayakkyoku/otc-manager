@@ -1,13 +1,7 @@
-export const dynamic = "force-dynamic";
-export const fetchCache = "force-no-store";
-export const revalidate = 0;
-export const sideEffects = false;
-export const runtime = "nodejs";
-// src/app/api/import/execute/route.ts
 import { NextRequest } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { apiError, apiSuccess } from "@/lib/api";
-import { LotStatus, SaleSource } from "@prisma/client";
+
+export const dynamic = "force-dynamic";
 
 interface ExecuteRow {
   janCode: string;
@@ -20,6 +14,9 @@ interface ExecuteRow {
 
 export async function POST(req: NextRequest) {
   try {
+    const { prisma } = await import("@/lib/prisma");
+    const { LotStatus, SaleSource } = await import("@prisma/client");
+
     const body = await req.json();
     const rows: ExecuteRow[] = body.rows;
     if (!rows?.length) return apiError("処理対象データがありません");
@@ -31,7 +28,6 @@ export async function POST(req: NextRequest) {
     };
 
     for (const row of rows) {
-      // 未マッチ → unmatched_salesに保存
       if (!row.matched || !row.productId) {
         await prisma.unmatchedSale.create({
           data: {
@@ -45,7 +41,6 @@ export async function POST(req: NextRequest) {
         continue;
       }
 
-      // FIFO消し込み
       let remaining = row.quantity;
       const lots = await prisma.inventoryLot.findMany({
         where: { productId: row.productId, status: LotStatus.ACTIVE, quantity: { gt: 0 } },
@@ -77,9 +72,7 @@ export async function POST(req: NextRequest) {
       }
 
       if (remaining > 0) {
-        results.errors.push(
-          `${row.productName}: 在庫不足（${remaining}個消し込み不能）`
-        );
+        results.errors.push(`${row.productName}: 在庫不足（${remaining}個消し込み不能）`);
       }
       results.processed++;
     }
@@ -89,4 +82,3 @@ export async function POST(req: NextRequest) {
     return apiError("消し込み実行に失敗しました", 500, e);
   }
 }
-// test
