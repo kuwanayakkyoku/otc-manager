@@ -1,10 +1,11 @@
-// src/app/api/alerts/log/route.ts
 import { NextRequest } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { apiError, apiSuccess } from "@/lib/api";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(_req: NextRequest) {
   try {
+    const { prisma } = await import("@/lib/prisma");
     const logs = await prisma.alertLog.findMany({
       include: {
         lot: {
