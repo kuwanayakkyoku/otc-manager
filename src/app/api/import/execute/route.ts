@@ -1,7 +1,6 @@
+﻿export const dynamic = "force-dynamic";
 import { NextRequest } from "next/server";
 import { apiError, apiSuccess } from "@/lib/api";
-
-export const dynamic = "force-dynamic";
 
 interface ExecuteRow {
   janCode: string;
@@ -50,7 +49,6 @@ export async function POST(req: NextRequest) {
       for (const lot of lots) {
         if (remaining <= 0) break;
         const deduct = Math.min(lot.quantity, remaining);
-
         await prisma.$transaction([
           prisma.salesRecord.create({
             data: {
