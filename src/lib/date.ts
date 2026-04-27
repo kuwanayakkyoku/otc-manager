@@ -45,8 +45,8 @@ export function getAlertStatus(days: number, alertDays: number[]): AlertStatus {
 /** シンプルなアラートステータス判定（固定閾値） */
 export function getAlertStatusSimple(days: number): AlertStatus {
   if (days < 0) return "expired";
-  if (days <= 7) return "days7";
-  if (days <= 30) return "days30";
+  if (days <= 30) return "days7";
+  if (days <= 90) return "days30";
   return "normal";
 }
 
@@ -60,7 +60,7 @@ export const ALERT_STATUS_CONFIG = {
     dot: "bg-red-500",
   },
   days7: {
-    label: "7日以内",
+    label: "30日以内",
     color: "text-yellow-600",
     bg: "bg-yellow-50",
     border: "border-yellow-200",
@@ -68,7 +68,7 @@ export const ALERT_STATUS_CONFIG = {
     dot: "bg-yellow-400",
   },
   days30: {
-    label: "30日以内",
+    label: "3カ月以内",
     color: "text-blue-600",
     bg: "bg-blue-50",
     border: "border-blue-200",

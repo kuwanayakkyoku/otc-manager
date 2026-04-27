@@ -27,8 +27,8 @@ interface ProductSummary {
 const TABS: { key: Filter; label: string }[] = [
   { key: "all", label: "全件" },
   { key: "expired", label: "期限切れ" },
-  { key: "days7", label: "7日以内" },
-  { key: "days30", label: "30日以内" },
+  { key: "days7", label: "30日以内" },
+  { key: "days30", label: "3ヶ月以内" },
 ];
 
 function InventoryContent() {

@@ -14,7 +14,7 @@ model Product {
   name       String
   spec       String
   janCode    String   @unique
-  alertDays  Int[]    @default([30, 7, 0])
+  alertDays  Int[]    @default([90, 30, 0])
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
