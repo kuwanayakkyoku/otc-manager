@@ -69,7 +69,7 @@ export default function DashboardPage() {
                 return (
                   <button
                     key={key}
-                    onClick={() => router.push(`/inventory?filter=${filter}`)}
+                    onClick={() => router.push(`/inventory?filter=${key}`)}
                     className={`${cfg.bg} ${cfg.border} border rounded-2xl p-3 text-left active:scale-95 transition-transform`}
                   >
                     <p className={`text-3xl font-black ${cfg.color}`}>{count}</p>
@@ -105,7 +105,7 @@ export default function DashboardPage() {
                 return (
                   <button
                     key={lot.lotId}
-                    onClick={() => router.push(`/inventory/${lot.productId}`)}
+                    onClick={() => router.push(`/inventory?filter=${lot.alertStatus}`)}
                     className="w-full bg-white rounded-xl px-4 py-3 flex items-center gap-3 text-left shadow-sm active:bg-gray-50"
                   >
                     <div className={`w-2 h-10 rounded-full flex-shrink-0 ${cfg.dot}`} />
