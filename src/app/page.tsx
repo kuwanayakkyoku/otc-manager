@@ -22,8 +22,8 @@ interface AlertLotItem {
 
 interface DashboardStats {
   expiredCount: number;
-  days7Count: number;
   days30Count: number;
+  days90Count: number;
   alertLots: AlertLotItem[];
 }
 
@@ -42,8 +42,8 @@ export default function DashboardPage() {
 
   const statCards = stats ? [
     { key: "expired" as AlertStatus, label: "期限切れ", count: stats.expiredCount, filter: "expired" },
-    { key: "days7" as AlertStatus, label: "7日以内", count: stats.days7Count, filter: "days7" },
     { key: "days30" as AlertStatus, label: "30日以内", count: stats.days30Count, filter: "days30" },
+    { key: "days180" as AlertStatus, label: "180日以内", count: stats.days180Count, filter: "days180" },
   ] : [];
 
   return (
