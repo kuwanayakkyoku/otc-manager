@@ -1,11 +1,12 @@
+export const dynamic = "force-dynamic";
 import { NextRequest } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { apiError, apiSuccess } from "@/lib/api";
-import { parseCsvRow } from "@/lib/api";
+import { apiError, apiSuccess, parseCsvRow } from "@/lib/api";
 import Papa from "papaparse";
 
 export async function POST(req: NextRequest) {
   try {
+    const { prisma } = await import("@/lib/prisma");
+
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
     if (!file) return apiError("ファイルが選択されていません");
