@@ -64,7 +64,7 @@ export default function DashboardPage() {
             ? Array(3).fill(0).map((_, i) => (
                 <div key={i} className="bg-white rounded-2xl h-24 animate-pulse" />
               ))
-            : statCards.map(({ key, label, count, filter }) => {
+            : statsList.map(({ key, label, count }) => {
                 const cfg = ALERT_STATUS_CONFIG[key];
                 return (
                   <button
