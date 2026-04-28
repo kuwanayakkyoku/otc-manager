@@ -1,4 +1,3 @@
-// src/app/inventory/page.tsx
 "use client";
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -55,9 +54,19 @@ function InventoryContent() {
 
   return (
     <div>
-      <PageHeader title="在庫一覧" />
+      <PageHeader
+        title="在庫一覧"
+        right={
+          
+            href="/api/export"
+            download
+            className="flex items-center gap-1 bg-green-600 text-white text-xs font-bold px-3 py-2 rounded-xl"
+          >
+            CSV出力
+          </a>
+        }
+      />
 
-      {/* Search bar */}
       <div className="px-4 pt-3 pb-2 bg-white border-b border-gray-100 sticky top-14 z-20">
         <div className="flex gap-2">
           <div className="relative flex-1">
@@ -78,7 +87,6 @@ function InventoryContent() {
           </button>
         </div>
 
-        {/* Filter tabs */}
         <div className="flex gap-1 mt-2">
           {TABS.map(({ key, label }) => (
             <button
@@ -135,23 +143,3 @@ function InventoryContent() {
                   {p.daysLeft !== null && (
                     <p className={cn("text-xs font-semibold", cfg.color)}>
                       {p.daysLeft < 0 ? `${Math.abs(p.daysLeft)}日超過` : p.daysLeft === 0 ? "本日期限" : `残${p.daysLeft}日`}
-                    </p>
-                  )}
-                </div>
-                <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
-              </button>
-            );
-          })
-        )}
-      </div>
-    </div>
-  );
-}
-
-export default function InventoryPage() {
-  return (
-    <Suspense fallback={<div className="p-8 text-center text-gray-400">読み込み中…</div>}>
-      <InventoryContent />
-    </Suspense>
-  );
-}
