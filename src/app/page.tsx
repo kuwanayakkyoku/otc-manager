@@ -2,8 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PageHeader } from "@/components/layout/page-header";
-import { ALERT_STATUS_CONFIG } from "@/lib/date";
-import { formatDate } from "@/lib/date";
+import { ALERT_STATUS_CONFIG, formatDate } from "@/lib/date";
 import type { AlertStatus } from "@/types";
 import { AlertTriangle, Package, RefreshCw } from "lucide-react";
 
@@ -47,15 +46,15 @@ export default function DashboardPage() {
   }, []);
 
   const statCards = stats ? [
-    { key: "expired" as AlertStatus, label: "譛滄剞蛻・ｌ", count: stats.expiredCount, filter: "expired" },
-    { key: "days7" as AlertStatus, label: "30譌･莉･蜀・, count: stats.days7Count, filter: "days7" },
-    { key: "days30" as AlertStatus, label: "3繝ｶ譛井ｻ･蜀・, count: stats.days30Count, filter: "days30" },
+    { key: "expired" as AlertStatus, label: "期限切れ", count: stats.expiredCount, filter: "expired" },
+    { key: "days7" as AlertStatus, label: "30日以内", count: stats.days7Count, filter: "days7" },
+    { key: "days30" as AlertStatus, label: "3ヶ月以内", count: stats.days30Count, filter: "days30" },
   ] : [];
 
   return (
     <div>
       <PageHeader
-        title="OTC譛滄剞邂｡逅・
+        title="OTC期限管理"
         subtitle={dateLabel}
         right={
           <button onClick={load} className="p-2 text-gray-400 active:text-gray-600">
@@ -63,7 +62,6 @@ export default function DashboardPage() {
           </button>
         }
       />
-
       <div className="px-4 pt-4 space-y-5">
         <div className="grid grid-cols-3 gap-3">
           {loading
@@ -84,13 +82,11 @@ export default function DashboardPage() {
                 );
               })}
         </div>
-
         <div>
           <div className="flex items-center gap-2 mb-3">
             <AlertTriangle className="w-4 h-4 text-orange-500" />
-            <h2 className="text-sm font-bold text-gray-700">隕∝ｯｾ蠢懊Ο繝・ヨ・域悄髯先・鬆・ｼ・/h2>
+            <h2 className="text-sm font-bold text-gray-700">要対応ロット（期限昇順）</h2>
           </div>
-
           {loading ? (
             <div className="space-y-2">
               {Array(4).fill(0).map((_, i) => (
@@ -100,8 +96,8 @@ export default function DashboardPage() {
           ) : stats?.alertLots?.length === 0 ? (
             <div className="bg-green-50 border border-green-200 rounded-2xl p-6 text-center">
               <Package className="w-8 h-8 text-green-400 mx-auto mb-2" />
-              <p className="text-sm font-semibold text-green-700">繧｢繝ｩ繝ｼ繝亥ｯｾ雎｡縺ｪ縺・/p>
-              <p className="text-xs text-green-500 mt-1">縺吶∋縺ｦ縺ｮ蝠・刀縺梧ｭ｣蟶ｸ縺ｧ縺・/p>
+              <p className="text-sm font-semibold text-green-700">アラート対象なし</p>
+              <p className="text-xs text-green-500 mt-1">すべての商品が正常です</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -121,10 +117,10 @@ export default function DashboardPage() {
                     </div>
                     <div className="text-right flex-shrink-0">
                       <p className={`text-sm font-bold ${cfg.color}`}>
-                        {lot.daysLeft < 0 ? `${Math.abs(lot.daysLeft)}譌･雜・℃` : lot.daysLeft === 0 ? "譛ｬ譌･" : `${lot.daysLeft}譌･`}
+                        {lot.daysLeft < 0 ? `${Math.abs(lot.daysLeft)}日超過` : lot.daysLeft === 0 ? "本日" : `${lot.daysLeft}日`}
                       </p>
                       <p className="text-xs text-gray-400">{dateStr}</p>
-                      <p className="text-xs text-gray-500">{lot.quantity}蛟・/p>
+                      <p className="text-xs text-gray-500">{lot.quantity}個</p>
                     </div>
                   </button>
                 );
