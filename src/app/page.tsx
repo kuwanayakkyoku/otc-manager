@@ -2,9 +2,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PageHeader } from "@/components/layout/page-header";
-import { Badge } from "@/components/ui/badge";
-import { formatDate } from "@/lib/date";
 import { ALERT_STATUS_CONFIG } from "@/lib/date";
+import { formatDate } from "@/lib/date";
 import type { AlertStatus } from "@/types";
 import { AlertTriangle, Package, RefreshCw } from "lucide-react";
 
@@ -22,8 +21,8 @@ interface AlertLotItem {
 
 interface DashboardStats {
   expiredCount: number;
+  days7Count: number;
   days30Count: number;
-  days90Count: number;
   alertLots: AlertLotItem[];
 }
 
@@ -31,6 +30,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [dateLabel, setDateLabel] = useState("");
 
   async function load() {
     setLoading(true);
@@ -38,19 +38,25 @@ export default function DashboardPage() {
     if (res.ok) setStats(await res.json());
     setLoading(false);
   }
-  useEffect(() => { load(); }, []);
 
-  const statsList = [
-    { key: "expired" as AlertStatus, label: "期限切れ", count: stats?.expiredCount ?? 0 },
-    { key: "days30" as AlertStatus, label: "30日以内", count: stats?.days30Count ?? 0 },
-    { key: "days180" as AlertStatus, label: "3ヶ月以内", count: stats?.days30Count ?? 0 }
-  ];
+  useEffect(() => {
+    load();
+    setDateLabel(new Date().toLocaleDateString("ja-JP", {
+      year: "numeric", month: "long", day: "numeric"
+    }));
+  }, []);
+
+  const statCards = stats ? [
+    { key: "expired" as AlertStatus, label: "期限切れ", count: stats.expiredCount, filter: "expired" },
+    { key: "days7" as AlertStatus, label: "30日以内", count: stats.days7Count, filter: "days7" },
+    { key: "days30" as AlertStatus, label: "3ヶ月以内", count: stats.days30Count, filter: "days30" },
+  ] : [];
 
   return (
     <div>
       <PageHeader
         title="OTC期限管理"
-        subtitle={new Date().toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric" })}
+        subtitle={dateLabel}
         right={
           <button onClick={load} className="p-2 text-gray-400 active:text-gray-600">
             <RefreshCw className="w-5 h-5" />
@@ -64,12 +70,12 @@ export default function DashboardPage() {
             ? Array(3).fill(0).map((_, i) => (
                 <div key={i} className="bg-white rounded-2xl h-24 animate-pulse" />
               ))
-            : statsList.map(({ key, label, count }) => {
+            : statCards.map(({ key, label, count, filter }) => {
                 const cfg = ALERT_STATUS_CONFIG[key];
                 return (
                   <button
                     key={key}
-                    onClick={() => router.push(`/inventory?filter=${key}`)}
+                    onClick={() => router.push(`/inventory?filter=${filter}`)}
                     className={`${cfg.bg} ${cfg.border} border rounded-2xl p-3 text-left active:scale-95 transition-transform`}
                   >
                     <p className={`text-3xl font-black ${cfg.color}`}>{count}</p>
@@ -101,11 +107,11 @@ export default function DashboardPage() {
             <div className="space-y-2">
               {stats?.alertLots?.map((lot) => {
                 const cfg = ALERT_STATUS_CONFIG[lot.alertStatus];
-                const dateLabel = lot.expiryDateFormatted ?? formatDate(new Date(lot.expiryDate));
+                const dateStr = lot.expiryDateFormatted ?? formatDate(new Date(lot.expiryDate));
                 return (
                   <button
                     key={lot.lotId}
-                    onClick={() => router.push(`/inventory?filter=${lot.alertStatus}`)}
+                    onClick={() => router.push(`/inventory/${lot.productId}`)}
                     className="w-full bg-white rounded-xl px-4 py-3 flex items-center gap-3 text-left shadow-sm active:bg-gray-50"
                   >
                     <div className={`w-2 h-10 rounded-full flex-shrink-0 ${cfg.dot}`} />
@@ -117,7 +123,7 @@ export default function DashboardPage() {
                       <p className={`text-sm font-bold ${cfg.color}`}>
                         {lot.daysLeft < 0 ? `${Math.abs(lot.daysLeft)}日超過` : lot.daysLeft === 0 ? "本日" : `${lot.daysLeft}日`}
                       </p>
-                      <p className="text-xs text-gray-400">{dateLabel}</p>
+                      <p className="text-xs text-gray-400">{dateStr}</p>
                       <p className="text-xs text-gray-500">{lot.quantity}個</p>
                     </div>
                   </button>
