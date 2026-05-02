@@ -20,10 +20,10 @@ interface ProductSummary {
 }
 
 const TABS: { key: Filter; label: string }[] = [
-  { key: "all", label: "全件" },
-  { key: "expired", label: "期限切れ" },
-  { key: "days7", label: "30日以内" },
-  { key: "days30", label: "3ヶ月以内" },
+  { key: "all", label: "蜈ｨ莉ｶ" },
+  { key: "expired", label: "譛滄剞蛻・ｌ" },
+  { key: "days7", label: "30譌･莉･蜀・ },
+  { key: "days30", label: "3繝ｶ譛井ｻ･蜀・ },
 ];
 
 function InventoryContent() {
@@ -53,14 +53,14 @@ function InventoryContent() {
   return (
     <div>
       <PageHeader
-        title="在庫一覧"
+        title="蝨ｨ蠎ｫ荳隕ｧ"
         right={
           
             href="/api/export"
             download
             className="bg-green-600 text-white text-xs font-bold px-3 py-2 rounded-xl"
           >
-            CSV出力
+            CSV蜃ｺ蜉・
           </a>
         }
       />
@@ -69,7 +69,7 @@ function InventoryContent() {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="商品名で検索"
+              placeholder="蝠・刀蜷阪〒讀懃ｴ｢"
               className="pl-9"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
