@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/layout/page-header";
 import { Badge } from "@/components/ui/badge";
@@ -14,12 +14,9 @@ type Filter = "all" | "expired" | "days7" | "days30";
 interface ProductSummary {
   id: string;
   name: string;
-  spec: string;
-  janCode: string;
-  earliestExpiry: string | null;
-  totalQuantity: number;
+  quantity: number;
+  expiryDate: string;
   alertStatus: AlertStatus;
-  daysLeft: number | null;
 }
 
 const TABS: { key: Filter; label: string }[] = [
@@ -35,7 +32,7 @@ function InventoryContent() {
   const [products, setProducts] = useState<ProductSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState(
+  const [filter, setFilter] = useState<Filter>(
     (searchParams.get("filter") as Filter) ?? "all"
   );
 
@@ -67,104 +64,66 @@ function InventoryContent() {
           </a>
         }
       />
-      <div className="px-4 pt-3 pb-2 bg-white border-b border-gray-100 sticky top-14 z-20">
+      <div className="p-4 space-y-4">
         <div className="flex gap-2">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="商品名・JANコードで検索"
+              placeholder="商品名で検索"
+              className="pl-9"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && load()}
-              className="pl-9"
             />
           </div>
-          <button
-            onClick={load}
-            className="bg-blue-600 text-white px-4 rounded-xl text-sm font-semibold"
-          >
-            検索
-          </button>
         </div>
-        <div className="flex gap-1 mt-2">
-          {TABS.map(({ key, label }) => (
+        <div className="flex gap-2 overflow-x-auto">
+          {TABS.map((tab) => (
             <button
-              key={key}
-              onClick={() => setFilter(key)}
+              key={tab.key}
+              onClick={() => setFilter(tab.key)}
               className={cn(
-                "flex-1 py-2 text-xs font-semibold rounded-lg transition-colors",
-                filter === key
+                "px-3 py-1 rounded-full text-sm whitespace-nowrap",
+                filter === tab.key
                   ? "bg-blue-600 text-white"
-                  : "text-gray-500 hover:bg-gray-100"
+                  : "bg-gray-100 text-gray-600"
               )}
             >
-              {label}
+              {tab.label}
             </button>
           ))}
         </div>
-      </div>
-      <div className="px-4 pt-3 space-y-2">
         {loading ? (
-          Array(6)
-            .fill(0)
-            .map((_, i) => (
-              <div key={i} className="bg-white rounded-xl h-20 animate-pulse" />
-            ))
+          <div className="text-center py-8 text-gray-400">読み込み中...</div>
         ) : products.length === 0 ? (
-          <div className="flex flex-col items-center py-20 text-center">
-            <Package className="w-12 h-12 text-gray-300 mb-3" />
-            <p className="text-gray-400 font-medium">商品が見つかりません</p>
+          <div className="text-center py-8 text-gray-400">
+            <Package className="mx-auto h-12 w-12 mb-2" />
+            <p>商品が見つかりません</p>
           </div>
         ) : (
-          products.map((p) => {
-            const cfg = ALERT_STATUS_CONFIG[p.alertStatus];
-            return (
-              <button
-                key={p.id}
-                onClick={() => router.push(`/inventory/${p.id}`)}
-                className="w-full bg-white rounded-xl px-4 py-3 flex items-center gap-3 text-left shadow-sm active:bg-gray-50"
-              >
+          <div className="space-y-2">
+            {products.map((product) => {
+              const config = ALERT_STATUS_CONFIG[product.alertStatus];
+              return (
                 <div
-                  className={cn(
-                    "w-1.5 h-12 rounded-full flex-shrink-0",
-                    cfg.dot
-                  )}
-                />
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-gray-900 text-sm truncate">
-                    {p.name}
-                  </p>
-                  <p className="text-xs text-gray-400 truncate">{p.spec}</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <Badge status={p.alertStatus} />
-                    {p.earliestExpiry && (
-                      <span className="text-xs text-gray-400">
-                        最短: {formatDate(new Date(p.earliestExpiry))}
-                      </span>
-                    )}
+                  key={product.id}
+                  onClick={() => router.push(`/inventory/${product.id}`)}
+                  className="bg-white rounded-xl p-4 flex items-center justify-between shadow-sm cursor-pointer"
+                >
+                  <div>
+                    <p className="font-medium">{product.name}</p>
+                    <p className="text-sm text-gray-500">
+                      期限: {formatDate(product.expiryDate)} / 残{product.quantity}個
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge className={config.badge}>{config.label}</Badge>
+                    <ChevronRight className="h-4 w-4 text-gray-400" />
                   </div>
                 </div>
-                <div className="text-right flex-shrink-0">
-                  <p className="text-lg font-bold text-gray-900">
-                    {p.totalQuantity}
-                    <span className="text-xs text-gray-400 font-normal">
-                      個
-                    </span>
-                  </p>
-                  {p.daysLeft !== null && (
-                    <p className={cn("text-xs font-semibold", cfg.color)}>
-                      {p.daysLeft < 0
-                        ? `${Math.abs(p.daysLeft)}日超過`
-                        : p.daysLeft === 0
-                        ? "本日期限"
-                        : `残${p.daysLeft}日`}
-                    </p>
-                  )}
-                </div>
-                <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
-              </button>
-            );
-          })
+              );
+            })}
+          </div>
         )}
       </div>
     </div>
@@ -172,13 +131,5 @@ function InventoryContent() {
 }
 
 export default function InventoryPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="p-8 text-center text-gray-400">読み込み中…</div>
-      }
-    >
-      <InventoryContent />
-    </Suspense>
-  );
+  return <InventoryContent />;
 }
