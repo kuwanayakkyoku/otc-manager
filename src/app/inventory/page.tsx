@@ -20,10 +20,10 @@ interface ProductSummary {
 }
 
 const TABS: { key: Filter; label: string }[] = [
-  { key: "all", label: "蜈ｨ莉ｶ" },
-  { key: "expired", label: "譛滄剞蛻・ｌ" },
-  { key: "days7", label: "30譌･莉･蜀・ },
-  { key: "days30", label: "3繝ｶ譛井ｻ･蜀・ },
+  { key: "all", label: "陷茨ｽｨ闔会ｽｶ" },
+  { key: "expired", label: "隴帶ｻ・応陋ｻ繝ｻ・・ },
+  { key: "days7", label: "30隴鯉ｽ･闔会ｽ･陷繝ｻ },
+  { key: "days30", label: "3郢晢ｽｶ隴帑ｺ包ｽｻ・･陷繝ｻ },
 ];
 
 function InventoryContent() {
@@ -53,14 +53,14 @@ function InventoryContent() {
   return (
     <div>
       <PageHeader
-        title="蝨ｨ蠎ｫ荳隕ｧ"
+        title="陜ｨ・ｨ陟趣ｽｫ闕ｳﾂ髫包ｽｧ"
         right={
           
             href="/api/export"
             download
             className="bg-green-600 text-white text-xs font-bold px-3 py-2 rounded-xl"
           >
-            CSV蜃ｺ蜉・
+            CSV陷・ｽｺ陷峨・
           </a>
         }
       />
@@ -69,7 +69,7 @@ function InventoryContent() {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="蝠・刀蜷阪〒讀懃ｴ｢"
+              placeholder="陜繝ｻ蛻陷ｷ髦ｪ縲定ｮ諛・ｽｴ・｢"
               className="pl-9"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
