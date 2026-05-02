@@ -35,7 +35,7 @@ function InventoryContent() {
   const [products, setProducts] = useState<ProductSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<Filter>(
+  const [filter, setFilter] = useState(
     (searchParams.get("filter") as Filter) ?? "all"
   );
 
