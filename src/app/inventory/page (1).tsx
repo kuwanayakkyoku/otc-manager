@@ -39,20 +39,15 @@ function InventoryContent() {
     load();
   }, [filter]);
 
+  const exportButton = React.createElement("a", {
+    href: "/api/export",
+    download: true,
+    className: "bg-green-600 text-white text-xs font-bold px-3 py-2 rounded-xl"
+  }, "CSV出力");
+
   return (
     <div>
-      <PageHeader
-        title="在庫一覧"
-        right={
-          <a
-            href="/api/export"
-            download
-            className="bg-green-600 text-white text-xs font-bold px-3 py-2 rounded-xl"
-          >
-            CSV出力
-          </a>
-        }
-      />
+      <PageHeader title="在庫一覧" right={exportButton} />
       <div className="p-4 space-y-4">
         <div className="flex gap-2">
           <div className="relative flex-1">
