@@ -1,3 +1,6 @@
+あ、そうですね！全部貼り直した方が確実です。もう一度全部のコードを送ります。鉛筆マークで開いてCtrl+Aで全消しして貼り付けてください👇
+
+```tsx
 "use client";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -126,3 +129,4 @@ export default function InventoryPage() {
     </Suspense>
   );
 }
+```
