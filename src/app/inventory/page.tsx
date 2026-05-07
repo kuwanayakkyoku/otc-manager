@@ -47,7 +47,7 @@ function InventoryContent() {
       <PageHeader
         title="在庫一覧"
         right={
-          
+      <a    
             href="/api/export"
             download
             className="bg-green-600 text-white text-xs font-bold px-3 py-2 rounded-xl"
