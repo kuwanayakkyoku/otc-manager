@@ -1,6 +1,5 @@
 "use client";
-import { Suspense } from "react";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/layout/page-header";
 import { Badge } from "@/components/ui/badge";
@@ -8,19 +7,8 @@ import { Input } from "@/components/ui/input";
 import { formatDate, ALERT_STATUS_CONFIG } from "@/lib/date";
 import { Search, ChevronRight, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { AlertStatus } from "@/types";
 
-type Filter = "all" | "expired" | "days7" | "days30";
-
-interface ProductSummary {
-  id: string;
-  name: string;
-  quantity: number;
-  expiryDate: string;
-  alertStatus: AlertStatus;
-}
-
-const TABS: { key: Filter; label: string }[] = [
+const TABS = [
   { key: "all", label: "全件" },
   { key: "expired", label: "期限切れ" },
   { key: "days7", label: "30日以内" },
@@ -30,11 +18,11 @@ const TABS: { key: Filter; label: string }[] = [
 function InventoryContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [products, setProducts] = useState<ProductSummary[]>([]);
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<Filter>(
-    (searchParams.get("filter") as Filter) ?? "all"
+  const [filter, setFilter] = useState(
+    searchParams.get("filter") ?? "all"
   );
 
   async function load() {
