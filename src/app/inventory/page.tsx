@@ -1,6 +1,3 @@
-あ、そうですね！全部貼り直した方が確実です。もう一度全部のコードを送ります。鉛筆マークで開いてCtrl+Aで全消しして貼り付けてください👇
-
-```tsx
 "use client";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -47,7 +44,7 @@ function InventoryContent() {
       <PageHeader
         title="在庫一覧"
         right={
-      <a    
+         <a 
             href="/api/export"
             download
             className="bg-green-600 text-white text-xs font-bold px-3 py-2 rounded-xl"
@@ -129,4 +126,3 @@ export default function InventoryPage() {
     </Suspense>
   );
 }
-```
