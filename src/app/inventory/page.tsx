@@ -97,7 +97,7 @@ function InventoryContent() {
                   <div>
                     <p className="font-medium">{product.name}</p>
                     <p className="text-sm text-gray-500">
-                      期限: {formatDate(new Date(product.expiryDate))} / 残{product.quantity}個
+                      期限: {product.expiryDate.slice(0,10)} / 残{product.quantity}個
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -121,3 +121,4 @@ export default function InventoryPage() {
     </Suspense>
   );
 }
+
