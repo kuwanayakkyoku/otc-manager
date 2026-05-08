@@ -1,4 +1,4 @@
-// @ts-nocheck
+﻿// @ts-nocheck
 "use client";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -15,18 +15,6 @@ const TABS = [
   { key: "days7", label: "30日以内" },
   { key: "days30", label: "3ヶ月以内" },
 ];
-
-const CsvButton = () => {
-  return React.createElement(
-    "a",
-    {
-      href: "/api/export",
-      download: true,
-      className: "bg-green-600 text-white text-xs font-bold px-3 py-2 rounded-xl",
-    },
-    "CSV出力"
-  );
-};
 
 function InventoryContent() {
   const router = useRouter();
@@ -54,7 +42,12 @@ function InventoryContent() {
 
   return (
     <div>
-      <PageHeader title="在庫一覧" right={<CsvButton />} />
+      <PageHeader
+        title="在庫一覧"
+        right={
+          <a href="/api/export" download className="bg-green-600 text-white text-xs font-bold px-3 py-2 rounded-xl">CSV出力</a>
+        }
+      />
       <div className="p-4 space-y-4">
         <div className="flex gap-2">
           <div className="relative flex-1">
@@ -104,7 +97,7 @@ function InventoryContent() {
                   <div>
                     <p className="font-medium">{product.name}</p>
                     <p className="text-sm text-gray-500">
-                       期限: {formatDate(new Date(product.expiryDate)))} / 残{product.quantity}個
+                      期限: {formatDate(new Date(product.expiryDate))} / 残{product.quantity}個
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
